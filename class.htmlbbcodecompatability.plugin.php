@@ -8,7 +8,7 @@ $PluginInfo['HtmlBBCodeCompatibility'] = array(
     'HasLocale' => FALSE,
     'Author' => "James Ducker",
     'AuthorEmail' => 'james.ducker@gmail.com',
-    'AuthorUrl' => 'https://github.com/jamesinc',
+    'AuthorUrl' => 'https://github.com/jamesinc/html-bbcode-compatibility',
 	'License' => 'GPL-3.0'
 );
 

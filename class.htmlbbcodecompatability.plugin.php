@@ -3,7 +3,7 @@ $PluginInfo['HtmlBBCodeCompatibility'] = array(
     'Name' => 'HTML + BBCode Compatability',
     'Description' => 'Based on the IPBFormat plugin, but treats all BBCode markup as allowing HTML also.',
     'Version' => '1.3',
-    'RequiredApplications' => ['Vanilla' => '>=2.3'],
+    'RequiredApplications' => ['Vanilla' => '>=3.2'],
     'MobileFriendly' => TRUE,
     'HasLocale' => FALSE,
     'Author' => "James Ducker",
@@ -15,34 +15,15 @@ $PluginInfo['HtmlBBCodeCompatibility'] = array(
 class HtmlBBCodeCompatibilityPlugin extends Gdn_Plugin {
 
     public function gdn_pluginManager_afterStart_handler( ) {
-        $tmp = Gdn::factoryOverwrite( true );
+        include(__DIR__.'/HtmlBBCodeFormat.php');
 
-        // This overrides the default BBCode formatter with this plugin
-        Gdn::FactoryInstall('BBCodeFormatter', 'HtmlBBCodeCompatibilityPlugin', __FILE__, Gdn::FactorySingleton);
-        Gdn::FactoryInstall('ActualBBCodeFormatter', 'BBCode', null, Gdn::FactorySingleton);
-
-        Gdn::factoryOverwrite( $tmp );
-        unset( $tmp );
-
+        Gdn::formatService()
+            ->registerFormat(
+                Vanilla\Formatting\Formats\BBCodeFormat::FORMAT_KEY,
+                Gdn::getContainer()->get(Vanilla\Formatting\Formats\HtmlBBCodeFormat::class)
+            );
     }
 
-    public function format( $mixed ) {
-
-        // Get a reference to the default BBCode formatter
-        $BBCodeFormatter = Gdn::factory('ActualBBCodeFormatter');
-
-        if ( is_object($BBCodeFormatter) ) {
-            // Ignore HTML tags
-            $BBCodeFormatter->nbbc()->setEscapeContent( false );
-            // DO handle line breaks
-            $BBCodeFormatter->nbbc()->setIgnoreNewlines( false );
-            // Parse BBCode
-            $mixed = $BBCodeFormatter->format( $mixed );
-        }
-
-        return $mixed;
-
-    }
 }
 
 ?>
